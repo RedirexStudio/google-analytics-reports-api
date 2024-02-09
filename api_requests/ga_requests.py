@@ -5,9 +5,11 @@ from google.analytics.data_v1beta.types import (
     Dimension,
     Metric,
     RunReportRequest,
+    FilterExpression,
+    Filter,
 )
 
-def events_report():
+def events_report(startDate, endDate, eventNameFilter):
     # credentials
     PROPERTY_ID = os.environ.get('GA_PROPERTY_ID')
     CREDENTIALS_JSON = os.environ.get('GA_CREDENTIALS_JSON')
@@ -21,7 +23,16 @@ def events_report():
         property=f"properties/{PROPERTY_ID}",
         dimensions=[Dimension(name="city"), Dimension(name="eventName"), Dimension(name="customEvent:address"), Dimension(name="customEvent:deposit")],
         metrics=[Metric(name="activeUsers"), Metric(name="eventCount")],
-        date_ranges=[DateRange(start_date="2020-03-31", end_date="today")],
+        date_ranges=[DateRange(start_date=(startDate if startDate is not None else "2020-03-31"), end_date=(endDate if endDate is not None else "today"))],
+        dimension_filter=FilterExpression(
+            filter=Filter(
+                field_name="eventName",
+                string_filter=Filter.StringFilter(
+                    match_type=Filter.StringFilter.MatchType.CONTAINS,
+                    value=eventNameFilter
+                ),
+            )
+        ) if eventNameFilter else None
     )
 
     try:
