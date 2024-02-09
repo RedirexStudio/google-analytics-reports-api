@@ -1,2 +1,0 @@
-PROPERTY_ID = "413617311"
-CREDENTIALS_JSON_PATH = "./credentials.json"
