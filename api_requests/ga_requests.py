@@ -20,7 +20,7 @@ def events_report():
 
     request = RunReportRequest(
         property=f"properties/{PROPERTY_ID}",
-        dimensions=[Dimension(name="city"), Dimension(name="eventName")],
+        dimensions=[Dimension(name="city"), Dimension(name="eventName"), Dimension(name="customEvent:address"), Dimension(name="customEvent:deposit")],
         metrics=[Metric(name="activeUsers"), Metric(name="eventCount")],
         date_ranges=[DateRange(start_date="2020-03-31", end_date="today")],
     )
@@ -34,6 +34,8 @@ def events_report():
         for row in response.rows:
             report_data.append({
                 'eventName': row.dimension_values[1].value,
+                'address': row.dimension_values[2].value,
+                'depositAmount': row.dimension_values[3].value,
                 'eventCount': row.metric_values[1].value,
                 'city': row.dimension_values[0].value,
                 'activeUsers': row.metric_values[0].value
