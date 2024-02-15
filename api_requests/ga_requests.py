@@ -21,7 +21,7 @@ def events_report(startDate, endDate, eventNameFilter):
 
     request = RunReportRequest(
         property=f"properties/{PROPERTY_ID}",
-        dimensions=[Dimension(name="city"), Dimension(name="eventName"), Dimension(name="customEvent:address"), Dimension(name="customEvent:deposit")],
+        dimensions=[Dimension(name="city"), Dimension(name="eventName"), Dimension(name="customEvent:address"), Dimension(name="customEvent:deposit"), Dimension(name="customEvent:inviter")],
         metrics=[Metric(name="activeUsers"), Metric(name="eventCount")],
         date_ranges=[DateRange(start_date=(startDate if startDate is not None else "2020-03-31"), end_date=(endDate if endDate is not None else "today"))],
         dimension_filter=FilterExpression(
@@ -46,6 +46,7 @@ def events_report(startDate, endDate, eventNameFilter):
                 'eventName': row.dimension_values[1].value,
                 'address': row.dimension_values[2].value,
                 'depositAmount': row.dimension_values[3].value,
+                'inviter': row.dimension_values[4].value,
                 'eventCount': row.metric_values[1].value,
                 'city': row.dimension_values[0].value,
                 'activeUsers': row.metric_values[0].value
