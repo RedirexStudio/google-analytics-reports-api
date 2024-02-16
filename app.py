@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from api_requests.ga_requests import events_report
-from features.validator import is_valid_date, is_valid_text
+from features.validator import is_valid_date, is_valid_text, is_valid_bsc_address
 
 app = Flask(__name__)
 
@@ -13,6 +13,7 @@ def run_events_report():
     startDate = request.args.get('startDate')
     endDate = request.args.get('endDate')
     eventNameFilter = request.args.get('eventNameFilter')
+    inviterParameterFilter = request.args.get('inviterFilter')
 
     if startDate:
         if not (is_valid_date(startDate)):
@@ -23,8 +24,11 @@ def run_events_report():
     if eventNameFilter:
         if not (is_valid_text(eventNameFilter)):
             raise ValueError("eventNameFilter is in invalid format")
+    if inviterParameterFilter:
+        if not (is_valid_bsc_address(inviterParameterFilter)):
+            raise ValueError("inviterParameterFilter is in invalid format")
     
-    result = events_report(startDate, endDate, eventNameFilter)
+    result = events_report(startDate, endDate, eventNameFilter, inviterParameterFilter)
 
     if 'error' in result:
         return jsonify({'error': result['error']}), 500
